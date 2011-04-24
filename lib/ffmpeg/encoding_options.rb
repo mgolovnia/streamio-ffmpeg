@@ -127,6 +127,38 @@ module FFMPEG
     def convert_file_preset(value)
       "-fpre #{value}"
     end
+
+    def convert_overlay(value)
+      "-vf \"movie=#{value[:movie]} [mv]; [in][mv] overlay=#{value[:x]}:#{value[:y]} [out]\""
+    end
+
+    def convert_scale(value)
+      "-vf \"scale=#{value[:width]}:#{value[:height]}\""
+    end
+
+    def convert_crop(value)
+      "-vf \"crop=#{value[:out_width]}:#{value[:out_height]}:#{value[:x]}:#{value[:y]}\""
+    end
+
+    def convert_hflip(value)
+      "-vf \"hflip\""
+    end
+
+    def convert_vflip(value)
+      "-vf \"vflip\""
+    end
+
+    def convert_dar(value)
+      "-vf \"setdar=#{value}\""
+    end
+
+    def convert_sar(value)
+      "-vf \"setsar=#{value}\""
+    end
+
+    def convert_custom_avfilter(value)
+      "-vf \"#{value}\""
+    end
     
     def convert_custom(value)
       value

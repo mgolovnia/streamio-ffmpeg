@@ -124,6 +124,42 @@ module FFMPEG
       it "should ignore options with nil value" do
         EncodingOptions.new(:video_codec => "libx264", :frame_rate => nil).to_s.should == "-vcodec libx264 "
       end
+
+      it "should add overlay video filter" do
+        opts = EncodingOptions.new(:overlay => {:movie => "test.png", :x => 10 , :y => 'main_h-overlay_h-10'})
+        opts.to_s.should == "-vf \"movie=test.png [mv]; [in][mv] overlay=10:main_h-overlay_h-10 [out]\""
+      end
+
+      it "should add scale video filter" do
+        opts = EncodingOptions.new(:scale => {:width => "200", :height=> "2*ih"})
+        opts.to_s.should == "-vf \"scale=200:2*ih\""
+      end
+      
+      it "should add crop video filter" do
+        opts = EncodingOptions.new(:crop => {:out_width => "in_w", :x => 10, :y => 'y'})
+        opts.to_s.should == "-vf \"crop=in_w::10:y\""
+      end
+
+      it "should add hflip video filter" do
+        EncodingOptions.new(:hflip => true).to_s.should == "-vf \"hflip\""
+      end
+      
+      it "should add vflip video filter" do
+        EncodingOptions.new(:vflip => true).to_s.should == "-vf \"vflip\""
+      end
+
+      it "should add dar video filter" do
+        EncodingOptions.new(:dar => "16:9").to_s.should == "-vf \"setdar=16:9\""
+      end
+      
+      it "should add sar video filter" do
+        EncodingOptions.new(:sar => "10:11" ).to_s.should == "-vf \"setsar=10:11\""
+      end
+
+      it "should add custom avfilter" do
+        EncodingOptions.new(:custom_avfilter => "[in] split [T1], fifo, [T2] overlay= 0:240 [out]; [T1] fifo, crop=0:0:-1:240, vflip [T2]").to_s.should == "-vf \"[in] split [T1], fifo, [T2] overlay= 0:240 [out]; [T1] fifo, crop=0:0:-1:240, vflip [T2]\""
+      end
+
     end
   end
 end

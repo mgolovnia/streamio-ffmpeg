@@ -94,6 +94,32 @@ Use ffpreset files to avoid headaches when encoding with libx264 (http://www.ffm
   options = {:video_codec => "libx264", :video_preset => "medium"} # audio_preset and file_preset also availible
   movie.transcode("movie.mp4", options) # encodes video using libx264-medium.ffpreset
 
+== Using video filters
+  
+Suppoted filters: overlay, crop, scale, hflip, vflip, setdar, setsar. 
+Example: 
+  
+Insert a transparent PNG logo in the bottom left corner of the input: 
+  
+  options = {:overlay => {:movie => "path_to_watermark_file", :x => 10, :y => "main_h-overlay_h-10"}}
+  
+Scale the input to 2x:
+  
+  options = {:scale => {:width => "2*iw", :height => "2*ih"}}
+
+Flip the input vertically:
+  
+  options = {:vflip => true}
+
+For another filters or filter chaining use custom_avfilter: 
+ 
+  options = {:custom_avfilter => "drawbox=10:20:200:60:red@0.5"}
+
+To check filter is installed, use FFMPEG::Transcoder.filter_installed?.
+Example:
+  
+  FFMPEG::Transcoder.filter_installed?("overlay")
+
 == Copyright
 
 Copyright (c) 2010 Streamio Networks AB. See LICENSE for details.

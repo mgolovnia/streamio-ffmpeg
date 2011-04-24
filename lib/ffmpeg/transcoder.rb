@@ -79,6 +79,17 @@ module FFMPEG
     def encoded
       @encoded ||= Movie.new(@output_file)
     end
+
+    def self.filter_installed?(filter)
+      Open3.popen3("ffmpeg -filters") do |stdin, stdout, stderr|
+        stdout.each do |line|
+          if line =~ Regexp.new("^#{filter}")
+            return true
+          end
+        end
+      end
+      return false
+    end
     
     private
     def apply_transcoder_options
